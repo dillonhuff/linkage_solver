@@ -4,6 +4,7 @@ using namespace z3;
 
 void curve_difference(context& c) {
   expr t = c.real_const( "t" );
+  expr t2 = c.real_const( "t2" );
 
   expr zero = c.real_val( "0" );
   expr one = c.real_val( "1" );
@@ -21,11 +22,14 @@ void curve_difference(context& c) {
 
   //expr diff = curve_1*curve_1 + curve_2*curve_2;
   expr diff_value = diff_x*diff_x + diff_y*diff_y;
+  expr t_in_range = (zero <= t) && (t <= one);
+  expr t2_in_range = (zero <= t2) && (t2 <= one);
+
+  expr t2_exists =
+    exists( t2, t2_in_range && ( diff_value < eps*eps ) );
 
   solver s( c );
-  s.add( zero <= t );
-  s.add( t <= one );
-  s.add( forall( t, diff_value < eps*eps ) );
+  s.add( forall( t, implies( t_in_range, t2_exists ) ) );
 
   std::cout << s.check() << "\n";
 
