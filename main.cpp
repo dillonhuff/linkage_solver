@@ -120,11 +120,47 @@ void nonlinear_example1() {
     set_param("pp.decimal", false); // disable decimal notation
 }
 
+void add_constant_constraints(context& c, solver& s) {
+  expr ab = c.real_const("AB");
+  expr ac = c.real_const("AC");
+  expr bd = c.real_const("BD");
+  expr ce = c.real_const("CE");
+  expr cd = c.real_const("CD");
+
+  expr a_x = c.real_const("a_x");
+  expr a_y = c.real_const("a_y");
+
+  expr b_x = c.real_const("b_x");
+  expr b_y = c.real_const("b_y");
+
+  expr s_const = c.real_val("0.01");
+
+  // AB distance constraint
+  s.add( (a_x - b_x)*(a_x - b_x) + (a_y - b_y)*(a_y - b_y) == ab*ab );
+
+  // Grashof condition constraints
+  s.add( ab >= ac );
+  s.add( bd >= ac );
+  s.add( cd >= ac );
+}
+
 int main() {
 
   config cfg;
   context c(cfg);
 
-  curve_difference(c);
+  solver s(c);
+
+  add_constant_constraints(c, s);
+
+    std::cout << s.check() << "\n";
+
+    model m = s.get_model();
+
+    //    std::cout << m << "\n";
+
+    set_param("pp.decimal", true); // set decimal notation
+    std::cout << "model in decimal notation\n";
+    std::cout << m << "\n";
   
 }
