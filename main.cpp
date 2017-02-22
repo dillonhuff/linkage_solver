@@ -131,6 +131,29 @@ struct vec2 {
   inline std::string y_str() const { return std::to_string(y); }
 };
 
+void add_distance_constraints(context& c,
+			      solver& s,
+			      expr c_xi,
+			      expr c_yi,
+			      expr a_x,
+			      expr a_y,
+			      expr ac) {
+  s.add( (a_x - c_xi)*(a_x - c_xi) + (a_y - c_yi)*(a_y - c_yi) == ac*ac );
+}
+
+void add_distance_constraints(std::string var_name,
+			      int i,
+			      context& c,
+			      solver& s,
+			      expr a_x,
+			      expr a_y,
+			      expr ac) {
+  expr c_xi = c.real_const(("C" + ("_x" + std::to_string(i)) ).c_str());
+  expr c_yi = c.real_const(("C" + ("_y" + std::to_string(i)) ).c_str());
+
+  add_distance_constraints(c, s, c_xi, c_yi, a_x, a_y, ac);
+}
+
 void add_constraints(context& c, solver& s, const std::vector<vec2>& target_points) {
   expr ab = c.real_const("AB");
   expr ac = c.real_const("AC");
@@ -160,10 +183,9 @@ void add_constraints(context& c, solver& s, const std::vector<vec2>& target_poin
 
   // Target C, D, E position constraints
   for (unsigned i = 0; i < target_points.size(); i++) {
-    expr c_xi = c.real_const(("C_x" + std::to_string(i)).c_str());
-    expr c_yi = c.real_const(("C_y" + std::to_string(i)).c_str());
-
-    s.add( (a_x - c_xi)*(a_x - c_xi) + (a_y - c_yi)*(a_y - c_yi) == ac*ac );
+    add_distance_constraints(string("C"), i, c, s, a_x, a_y, ac);
+    add_distance_constraints(string("D"), i, c, s, b_x, b_y, bd);
+    
   }
 }
 
