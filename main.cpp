@@ -142,6 +142,11 @@ void add_constant_constraints(context& c, solver& s) {
   s.add( ab >= ac );
   s.add( bd >= ac );
   s.add( cd >= ac );
+
+  s.add( (cd + bd) >= (ac + ab + s_const) );
+  s.add( (ab + cd) >= (ac + bd + s_const) );
+  s.add( (ab + bd) >= (ac + cd + s_const) );
+
 }
 
 int main() {
