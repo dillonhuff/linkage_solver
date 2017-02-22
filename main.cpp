@@ -148,10 +148,22 @@ void add_distance_constraints(std::string var_name,
 			      expr a_x,
 			      expr a_y,
 			      expr ac) {
-  expr c_xi = c.real_const(("C" + ("_x" + std::to_string(i)) ).c_str());
-  expr c_yi = c.real_const(("C" + ("_y" + std::to_string(i)) ).c_str());
+  expr c_xi = c.real_const((var_name + ("_x" + std::to_string(i)) ).c_str());
+  expr c_yi = c.real_const((var_name + ("_y" + std::to_string(i)) ).c_str());
 
   add_distance_constraints(c, s, c_xi, c_yi, a_x, a_y, ac);
+}
+
+void add_linearity_constraint(context& c,
+			      solver& s,
+			      string c_n,
+			      string d_n,
+			      string e_n,
+			      int i) {
+
+  // expr c_xi = c.real_const(("C" + ("_x" + std::to_string(i)) ).c_str());
+  // expr c_yi = c.real_const(("C" + ("_y" + std::to_string(i)) ).c_str());
+  
 }
 
 void add_constraints(context& c, solver& s, const std::vector<vec2>& target_points) {
@@ -193,6 +205,8 @@ void add_constraints(context& c, solver& s, const std::vector<vec2>& target_poin
     expr e_yi = c.real_const(("E" + ("_y" + std::to_string(i)) ).c_str());
 
     add_distance_constraints(c, s, c_xi, c_yi, e_xi, e_yi, cd);
+
+    add_linearity_constraint(c, s, string("C"), string("D"), string("E"), i);
   }
 }
 
