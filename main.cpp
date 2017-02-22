@@ -185,7 +185,14 @@ void add_constraints(context& c, solver& s, const std::vector<vec2>& target_poin
   for (unsigned i = 0; i < target_points.size(); i++) {
     add_distance_constraints(string("C"), i, c, s, a_x, a_y, ac);
     add_distance_constraints(string("D"), i, c, s, b_x, b_y, bd);
-    
+
+    expr c_xi = c.real_const(("C" + ("_x" + std::to_string(i)) ).c_str());
+    expr c_yi = c.real_const(("C" + ("_y" + std::to_string(i)) ).c_str());
+
+    expr e_xi = c.real_const(("E" + ("_x" + std::to_string(i)) ).c_str());
+    expr e_yi = c.real_const(("E" + ("_y" + std::to_string(i)) ).c_str());
+
+    add_distance_constraints(c, s, c_xi, c_yi, e_xi, e_yi, cd);
   }
 }
 
