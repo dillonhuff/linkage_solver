@@ -131,7 +131,7 @@ struct vec2 {
   inline std::string y_str() const { return std::to_string(y); }
 };
 
-void add_constant_constraints(context& c, solver& s) {
+void add_constraints(context& c, solver& s, const std::vector<vec2>& target_points) {
   expr ab = c.real_const("AB");
   expr ac = c.real_const("AC");
   expr bd = c.real_const("BD");
@@ -158,7 +158,13 @@ void add_constant_constraints(context& c, solver& s) {
   s.add( (ab + cd) >= (ac + bd + s_const) );
   s.add( (ab + bd) >= (ac + cd + s_const) );
 
-  
+  // Target C, D, E position constraints
+  for (unsigned i = 0; i < target_points.size(); i++) {
+    expr c_xi = c.real_const(("C_x" + std::to_string(i)).c_str());
+    expr c_yi = c.real_const(("C_y" + std::to_string(i)).c_str());
+
+    s.add( (a_x - c_xi)*(a_x - c_xi) + (a_y - c_yi)*(a_y - c_yi) == ac*ac );
+  }
 }
 
 int main() {
@@ -169,9 +175,8 @@ int main() {
   solver s(c);
 
   vector<vec2> targets{ {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
-
-  add_constant_constraints(c, s);
-
+  add_constraints(c, s, targets);
+  
   std::cout << s.check() << "\n";
 
   model m = s.get_model();
