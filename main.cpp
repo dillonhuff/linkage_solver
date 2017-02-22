@@ -1,5 +1,9 @@
+#include <string>
+#include <vector>
+
 #include <z3++.h>
 
+using namespace std;
 using namespace z3;
 
 void curve_difference(context& c) {
@@ -120,6 +124,13 @@ void nonlinear_example1() {
     set_param("pp.decimal", false); // disable decimal notation
 }
 
+struct vec2 {
+  double x, y;
+
+  inline std::string x_str() const { return std::to_string(x); }
+  inline std::string y_str() const { return std::to_string(y); }
+};
+
 void add_constant_constraints(context& c, solver& s) {
   expr ab = c.real_const("AB");
   expr ac = c.real_const("AC");
@@ -147,6 +158,7 @@ void add_constant_constraints(context& c, solver& s) {
   s.add( (ab + cd) >= (ac + bd + s_const) );
   s.add( (ab + bd) >= (ac + cd + s_const) );
 
+  
 }
 
 int main() {
@@ -156,16 +168,18 @@ int main() {
 
   solver s(c);
 
+  vector<vec2> targets{ {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
+
   add_constant_constraints(c, s);
 
-    std::cout << s.check() << "\n";
+  std::cout << s.check() << "\n";
 
-    model m = s.get_model();
+  model m = s.get_model();
 
-    //    std::cout << m << "\n";
+  //    std::cout << m << "\n";
 
-    set_param("pp.decimal", true); // set decimal notation
-    std::cout << "model in decimal notation\n";
-    std::cout << m << "\n";
+  set_param("pp.decimal", true); // set decimal notation
+  std::cout << "model in decimal notation\n";
+  std::cout << m << "\n";
   
 }
