@@ -4,3 +4,5 @@ LINK_FLAGS= -L/Users/dillon/CppWorkspace/ThmProving/z3/build/ -lz3
 
 all:
 	clang++ $(CXX_FLAGS) $(LINK_FLAGS) main.cpp
+
+# export DYLD_LIBRARY_PATH=/Users/dillon/CppWorkspace/ThmProving/z3/build/

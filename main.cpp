@@ -218,16 +218,13 @@ void add_constraints(context& c, solver& s, const std::vector<vec2>& target_poin
 
     add_linearity_constraint(c, s, string("C"), string("D"), string("E"), i);
 
-    expr eps = c.real_val(std::to_string(1.0).c_str());
+    double eps_val = 0.5;
+    expr eps = c.real_val(std::to_string(eps_val).c_str());
 
     expr t_xi = c.real_val(target_points[i].x_str().c_str());
     expr t_yi = c.real_val(target_points[i].y_str().c_str());
 
     add_distance_constraints(c, s, t_xi, t_yi, e_xi, e_yi, eps);
-    //expr t_yi = c.real_const(("E" + ("_y" + std::to_string(i)) ).c_str());
-    
-    //add_distance_constraint();
-    //add_solver_constraint("T", "E", std::to_string("1.0"));
   }
 }
 
